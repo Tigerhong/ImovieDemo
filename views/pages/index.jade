@@ -1,0 +1,21 @@
+extends ../layout
+block content
+    .container
+        .row
+            each item in movies
+                .col-md-2
+                    .thumbnail
+                        a(href='/movie/#{item._id}')
+                            img(src="#{item.poster}",alt="#{item.title}")
+                        .caption
+                            h3 #{item.title}
+                            p: a.btn.btn-primary(href='/movie/#{item._id}',role='button')   观看预告片
+
+
+
+
+//
+    pug和jade使用 #{} 的不同
+    使用加入使用的模版引擎是pug时，在img中src属性就
+    不能是img(src="#{item.poster}",alt="#{item.title}")
+    而应该是这样img(src="item.poster",alt="item.title")这样才能将item.title读取出来
