@@ -21,6 +21,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components')));
 // app.use(express.bodyParser());
 
+var bodyParser = require('body-parser');
+// 因为后台录入页有提交表单的步骤，故加载此模块方法（bodyParser模块来做文件解析），将表单里的数据进行格式化
+app.use(bodyParser.urlencoded({extended: true}));
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
