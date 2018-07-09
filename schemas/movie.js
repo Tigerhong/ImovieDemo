@@ -9,6 +9,7 @@ var MovieSchema=new mongoose.Schema({
     flash:String,
     poster:String,
     year:Number,
+    // meta 更新或录入数据的时间记录
     meta:{
      crateAt:{
          type:Date,
@@ -29,6 +30,7 @@ MovieSchema.pre("save",function (next) {
     }
     next();
 })
+// movieSchema 模式的静态方法
 MovieSchema.statics={
     fetch:function (cb) {
         return this
@@ -42,5 +44,6 @@ MovieSchema.statics={
             .exec(cb)
     }
 }
+// 导出movieSchema模式
 module.exports=MovieSchema
 //定义模式
