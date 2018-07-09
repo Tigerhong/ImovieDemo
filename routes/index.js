@@ -2,16 +2,7 @@ var express = require('express');
 var router = express.Router();
 var underscore = require("underscore");// _.extend用新对象里的字段替换老的字段
 
-/*  mongoose 简要知识点补充
-* mongoose模块构建在mongodb之上，提供了Schema[模式]、Model[模型]和Document[文档]对象，用起来更为方便。
-* Schema对象定义文档的结构（类似表结构），可以定义字段和类型、唯一性、索引和验证。
-* Model对象表示集合中的所有文档。
-* Document对象作为集合中的单个文档的表示。
-* mongoose还有Query和Aggregate对象，Query实现查询，Aggregate实现聚合。
-* */
-var mongoose = require("mongoose");
 var Movie = require("../models/movie");// 载入mongoose编译后的模型movie
-mongoose.connect("mongodb://localhost:27017/imooc")
 
 /* index page项目的首页 */
 router.get('/', function (req, res, next) {
