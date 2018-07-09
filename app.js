@@ -18,7 +18,7 @@ app.use(logger('dev'));
 // app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'bower_components')));
+// app.use(express.static(path.join(__dirname, 'bower_components')));
 // app.use(express.bodyParser());
 app.locals.moment=require('moment')
 var bodyParser = require('body-parser');//这里使用了body-parser后就不能用express中的json解析了

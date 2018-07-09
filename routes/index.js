@@ -99,6 +99,20 @@ router.post("/admin/movie/new", function (req, res) {
         })
     }
 })
+// list delete movie data 列表页删除电影
+router.delete('/admin/list',function (req,res) {
+    var id = req.query.id;
+    if (id){
+        Movie.remove({_id:id},function (err, movie) {
+            if (err){
+                console.log(err)
+            } else{
+                res.json({success:1})
+            }
+        })
+    }
+
+})
 /* list page. 后台电影列表界面*/
 router.get('/list', function (req, res, next) {
     Movie.fetch(function (err, movies) {

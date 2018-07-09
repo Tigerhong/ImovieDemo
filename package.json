@@ -17,5 +17,18 @@
     "morgan": "~1.9.0",
     "pug": "2.0.0-beta11",
     "underscore": "^1.9.1"
-  }
+  },
+  "main": "app.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tigerhong/ImovieDemo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tigerhong/ImovieDemo/issues"
+  },
+  "homepage": "https://github.com/Tigerhong/ImovieDemo#readme",
+  "description": ""
 }
