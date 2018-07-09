@@ -1,0 +1,24 @@
+{
+  "name": "imooc",
+  "description": "imooc movie",
+  "main": "",
+  "authors": [
+    "hongzhengong <hongzhengonghzg@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "123"
+  ],
+  "homepage": "https://github.com/Tigerhong/ImovieDemo",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "3.3.7"
+  }
+}
