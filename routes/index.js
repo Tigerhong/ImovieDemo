@@ -100,7 +100,7 @@ router.post("/admin/movie/new", function (req, res) {
     }
 })
 // list delete movie data 列表页删除电影
-router.delete('/admin/list',function (req,res) {
+router.delete('/list/deleteMovie',function (req,res) {
     var id = req.query.id;
     if (id){
         Movie.remove({_id:id},function (err, movie) {
