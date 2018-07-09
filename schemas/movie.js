@@ -7,7 +7,7 @@ var MovieSchema=new mongoose.Schema({
     country:String,
     summary:String,
     flash:String,
-    post:String,
+    poster:String,
     year:Number,
     meta:{
      crateAt:{
@@ -33,7 +33,7 @@ MovieSchema.statics={
     fetch:function (cb) {
         return this
             .find({})
-            .sort("meta.updateAt")
+            .sort("meta.updateAt")//排序方式，根据创建的时间来排序
             .exec(cb)
     },
     findById:function (id, cb) {
