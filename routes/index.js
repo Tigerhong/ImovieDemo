@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var underscore = require("underscore");// _.extend用新对象里的字段替换老的字段
 
-var Movie = require("../models/movie");// 载入mongoose编译后的模型movie
+var Movie = require("../mongodb/models/movie");// 载入mongoose编译后的模型movie
 
 /* index page项目的首页 */
 router.get('/', function (req, res, next) {

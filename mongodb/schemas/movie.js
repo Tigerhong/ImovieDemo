@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var MovieSchema=new mongoose.Schema({
+    //  定义了一个新的模型
     doctor:String,
     title:String,
     language:String,
@@ -30,7 +31,7 @@ MovieSchema.pre("save",function (next) {
     }
     next();
 })
-// movieSchema 模式的静态方法
+// 为MovieSchema 模式的扩展一些静态方法
 MovieSchema.statics={
     fetch:function (cb) {
         return this

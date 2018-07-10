@@ -17,3 +17,14 @@ var Movie = mongoose.model("Movie",MovieSchema);
 // 将movie模型[构造函数]导出
 module.exports=Movie
 //编译好模型
+
+
+/*
+* 使用mongoose
+* 1.先连接数据库
+* 2.定义一个Schema
+* 3.将该Schema发布为Model
+*      1.为此Schema创建方法
+* 4.用Model创建Entity
+* 5.Entity是具有具体的数据库操作CRUD的
+* **/
