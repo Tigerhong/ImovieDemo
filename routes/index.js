@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var underscore = require("underscore");// _.extend用新对象里的字段替换老的字段
 
-var Movie = require("../mongodb/models/movie");// 载入mongoose编译后的模型movie
+var Movie =  require("../mongodb/models/movie");// 载入mongoose编译后的模型movie
+var User =  require("../mongodb/models/user");// 载入mongoose编译后的模型movie
 
 /* index page项目的首页 */
 router.get('/', function (req, res, next) {
@@ -124,5 +125,72 @@ router.get('/list', function (req, res, next) {
         });
     })
 });
-
+//signup注册请求
+router.post('/user/signup',function (req,res) {
+    var _user= req.body.user;
+    // console.log("请求过来的参数"+_user)
+    // req.param('user')//这样获取也能获取到user这个json对象
+    User.find({name:_user.name},function (err, user) {
+        //判断该名字是否有注册过
+        if (err){
+            console.log(err)
+        }
+        if (user.length){
+            //已经注册
+            return res.redirect("/")
+        } else {
+            //没有注册
+            var user=new User(_user);
+            user.save(function (err,user) {
+                if (err){
+                    console.log(err)
+                    return;
+                }
+                console.log("注册成功")
+                res.redirect("/admin/userlist")
+            })
+        }
+    })
+})
+//signin登录请求
+router.post('/user/signin',function (req,res) {
+    var _user= req.body.user;
+    var name = _user.name;
+    var password = _user.password;
+    // console.log("请求过来的参数"+_user)
+    User.findOne({name:_user.name},function (err, user) {
+        //判断该名字是否有注册过
+        if (err){
+            console.log(err)
+        }
+        if (!user){
+            //已经存在
+            return res.redirect("/")
+        }
+        user.comparePassword(password,function (err, isMatch) {
+            if (err){
+                console.log(err)
+            }
+            if (isMatch){
+                //登录成功
+                console.log("登录成功")
+                return res.redirect("/")
+            } else{
+                console.log("登录失败.password is not matched")
+            }
+        })
+    })
+})
+/* 后台用户list界面. */
+router.get('/admin/userlist', function (req, res, next) {
+    User.fetch(function (err, users) {
+        if (err) {
+            console.log(err)
+        }
+        res.render('userlist', {
+            title: 'imooc 用户列表页',
+            users: users
+        });
+    })
+});
 module.exports = router;
