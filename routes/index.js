@@ -7,13 +7,20 @@ var User =  require("../mongodb/models/user");// 载入mongoose编译后的模�
 
 /* index page项目的首页 */
 router.get('/', function (req, res, next) {
+    console.log("user in session")
+    console.log(req.session.user)
+    //会话持久在这里处理的话只有在这个界面会这样，其他界面没有设置session.user
+    // var _user = req.session.user;
+    // if (_user){
+    //     app.locals.user=_user
+    // }
     Movie.fetch(function (err, movies) {
         if (err) {
             console.log(err)
         }
         res.render('index', {
             title: 'imooc 首页',
-            movies: movies
+            movies: movies,
         });
     })
 
@@ -174,6 +181,7 @@ router.post('/user/signin',function (req,res) {
             if (isMatch){
                 //登录成功
                 console.log("登录成功")
+                req.session.user=user
                 return res.redirect("/")
             } else{
                 console.log("登录失败.password is not matched")
@@ -193,4 +201,23 @@ router.get('/admin/userlist', function (req, res, next) {
         });
     })
 });
-module.exports = router;
+//登出
+router.get("/logout",function (req,res) {
+    delete req.session.user
+    delete  localApp.locals.user
+    res.redirect('/')
+})
+
+var localApp;
+module.exports = function (app) {
+    localApp=app;
+    //pre hande session 会话持久逻辑预处理
+    app.use(function (req, res, next) {
+        var _user = req.session.user;
+        if (_user){
+            app.locals.user=_user
+        }
+        next()
+    })
+    return router;
+};
