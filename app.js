@@ -9,7 +9,7 @@ var app = express();// 启动Web服务器
 app.locals.moment=require('moment')// 载入moment模块，格式化日期
 
 // view engine setup
-app.set('views', path.join(__dirname, './views/pages')); // 设置视图默认的文件路径
+app.set('views', path.join(__dirname, './app/views/pages')); // 设置视图默认的文件路径
 app.set('view engine', 'jade');// 设置视图引擎：jade
 
 app.use(express.static(path.join(__dirname, 'public')));
