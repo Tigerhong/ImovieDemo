@@ -49,7 +49,7 @@ if ('development'===app.get('env')){
 }
 
 //配置路由
- require('./routes/index')(app);
+ require('./config/routes')(app);
 
 
 // catch 404 and forward to error handler
