@@ -1,5 +1,26 @@
 var User =  require("../mongodb/models/user");// 载入mongoose编译后的模型movie
 /**
+ * 访问注册界面
+ * @param req
+ * @param res
+ */
+exports.showSignup=function (req, res) {
+    res.render('singup',{
+        title:'注册界面'
+    })
+}
+/**
+ * 访问登录界面
+ * @param req
+ * @param res
+ */
+exports.showSignin=function (req, res) {
+    res.render('singin',{
+        title:'登录界面'
+    })
+}
+
+/**
  * signup注册请求
  * @param req
  * @param res
@@ -15,17 +36,16 @@ exports.singup= function (req,res) {
             }
             if (user.length){
                 //已经注册
-                return res.redirect("/")
+                return res.redirect("/signin")
             } else {
                 //没有注册
                 var user=new User(_user);
                 user.save(function (err,user) {
                     if (err){
                         console.log(err)
-                        return;
                     }
                     console.log("注册成功")
-                    res.redirect("/admin/userlist")
+                    res.redirect("/")
                 })
             }
         })
@@ -47,7 +67,7 @@ exports.singin=function (req,res) {
         }
         if (!user){
             //已经存在
-            return res.redirect("/")
+            return res.redirect("/signup")
         }
         user.comparePassword(password,function (err, isMatch) {
             if (err){
@@ -60,6 +80,7 @@ exports.singin=function (req,res) {
                 return res.redirect("/")
             } else{
                 console.log("登录失败.password is not matched")
+                return res.redirect("/signin")
             }
         })
     })
@@ -90,4 +111,31 @@ exports.logout=function (req,res) {
     delete req.session.user
     // delete  app.locals.user
     res.redirect('/')
+}
+/**
+ * 是否有登录过的检验
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.signinRequired=function (req, res, next) {
+    var user = req.session.user;
+    if (!user){
+       return res.redirect('/signin')
+    }
+    next();
+}
+/**
+ * 是否有访问后台的权限检验
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.adminRequired=function (req, res, next) {
+    var user = req.session.user;
+    if (user.role<=10){
+        return  res.redirect('/signin')
+    }
+    //只有role>10以上的才有权限访问后台的界面
+    next();
 }
