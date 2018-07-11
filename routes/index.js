@@ -210,7 +210,7 @@ module.exports = function (app) {
 //登出
     app.get("/logout",function (req,res) {
         delete req.session.user
-        delete  localApp.locals.user
+        delete  app.locals.user
         res.redirect('/')
     })
 };

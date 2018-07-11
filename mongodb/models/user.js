@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/imooc")//连接数据库
 var UserSchema = require("../schemas/user.js");
 
 // 编译生成User模型

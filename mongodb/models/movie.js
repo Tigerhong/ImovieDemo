@@ -8,7 +8,7 @@
 * */
 var mongoose = require("mongoose");
 //写在这里连接数据，不知道会不会每次引用此文件的时候都去连接
-mongoose.connect("mongodb://localhost:27017/imooc")//连接数据库
+// mongoose.connect("mongodb://localhost:27017/imooc")//连接数据库
 var MovieSchema = require("../schemas/movie.js");//引入'../schemas/movie.js'导出的模式模块
 
 // 编译生成movie模型
