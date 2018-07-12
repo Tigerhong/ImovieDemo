@@ -1,6 +1,7 @@
 var Index = require('../app/controllers/index');
 var User = require('../app/controllers/user');
 var Movie = require('../app/controllers/movie');
+var Comment = require('../app/controllers/comment');
 
 module.exports = function (app) {
     //pre hande session 会话持久逻辑预处理
@@ -29,4 +30,7 @@ module.exports = function (app) {
     app.post("/admin/movie/movie/new", User.signinRequired,User.adminRequired,Movie.new)//admin post movie 后台录入请求
     app.delete('/admin/movie/list/deleteMovie', User.signinRequired,User.adminRequired,Movie.del)// list delete movie data 后台录入list删除请求
     app.get('/admin/movie/list', User.signinRequired,User.adminRequired,Movie.list);//list page. 后台电影列表界面
+
+    //Comment
+    app.post('/user/comment', User.signinRequired,Comment.save)
 };

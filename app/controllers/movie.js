@@ -1,18 +1,25 @@
 var underscore = require("underscore");// _.extend用新对象里的字段替换老的字段
-var Movie =  require("../mongodb/models/movie");// 载入mongoose编译后的模型movie
+var Movie = require("../mongodb/models/movie");// 载入mongoose编译后的模型movie
+var Comment = require("../mongodb/models/comment");
 /**
  * details page. 电影详情界面
  * @param req
  * @param res
  * @param next
  */
-exports.details= function (req, res, next) {
+exports.details = function (req, res, next) {
     var id = req.params.id;
+    //todo:第一种方式movie user各种查询
+    //现在使用另外一种，简单的callback的嵌套查询，这样不怎么好
     Movie.findById(id, function (err, movie) {
-        res.render('details', {
-            title: 'imooc 详情页' + movie.title,
-            movie: movie
-        });
+        Comment.find({movie: id}, function (err,comments) {
+            console.log(comments)
+            res.render('details', {
+                title: 'imooc 详情页' + movie.title,
+                movie: movie,
+                comments:comments
+            });
+        })
     })
 }
 /**
@@ -21,7 +28,7 @@ exports.details= function (req, res, next) {
  * @param res
  * @param next
  */
-exports.admin= function (req, res, next) {
+exports.admin = function (req, res, next) {
     res.render('admin', {
         title: 'imooc 后台录入页',
         movie: {
@@ -41,11 +48,11 @@ exports.admin= function (req, res, next) {
  * @param req
  * @param res
  */
-exports.update= function (req, res) {
+exports.update = function (req, res) {
     var id = req.params.id;
     if (id) {
         Movie.findById(id, function (err, movie) {
-            if (err){
+            if (err) {
                 console.log(err)
             }
             res.render('admin', {
@@ -53,7 +60,7 @@ exports.update= function (req, res) {
                 movie: movie
             })
         })
-    }else{
+    } else {
         console.log("后台更新页id不存在")
     }
 }
@@ -62,7 +69,7 @@ exports.update= function (req, res) {
  * @param req
  * @param res
  */
-exports.new=function (req, res) {
+exports.new = function (req, res) {
     var id = req.body.movie._id;
     var movieObj = req.body.movie
     var _movie
@@ -104,14 +111,14 @@ exports.new=function (req, res) {
  * @param req
  * @param res
  */
-exports.del=function (req,res) {
+exports.del = function (req, res) {
     var id = req.query.id;
-    if (id){
-        Movie.remove({_id:id},function (err, movie) {
-            if (err){
+    if (id) {
+        Movie.remove({_id: id}, function (err, movie) {
+            if (err) {
                 console.log(err)
-            } else{
-                res.json({success:1})
+            } else {
+                res.json({success: 1})
             }
         })
     }
@@ -123,7 +130,7 @@ exports.del=function (req,res) {
  * @param res
  * @param next
  */
-exports.list=function (req, res, next) {
+exports.list = function (req, res, next) {
     Movie.fetch(function (err, movies) {
         if (err) {
             console.log(err)
