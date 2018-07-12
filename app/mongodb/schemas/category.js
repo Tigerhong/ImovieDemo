@@ -1,33 +1,25 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema
-var ObjectId = Schema.Types.ObjectId
-var MovieSchema=new Schema({
-    //  定义了一个新的模型
-    doctor:String,
-    title:String,
-    language:String,
-    country:String,
-    summary:String,
-    flash:String,
-    poster:String,
-    year:Number,
-    category:{
-        type:ObjectId,
-        ref:'category'
-    },
-    // meta 更新或录入数据的时间记录
+var Schema=mongoose.Schema
+var ObjectId=Schema.Types.ObjectId;
+
+var CategorySchema=new Schema({
+    name:String,
+    movies:[{
+        type:ObjectId,ref:'Movie'
+    }],
     meta:{
-     crateAt:{
-         type:Date,
-         default:Date.now()
-     },
+        crateAt:{
+            type:Date,
+            default:Date.now()
+        },
         updatAt:{
             type:Date,
             default:Date.now()
         }
     },
 })
-MovieSchema.pre("save",function (next) {
+
+CategorySchema.pre("save",function (next) {
     //每次使用save前都会执行这个监听方法
     if (this.isNew){
         this.meta.createAt=this.meta.updatAt=Date.now()
@@ -36,8 +28,8 @@ MovieSchema.pre("save",function (next) {
     }
     next();
 })
-// 为MovieSchema 模式的扩展一些静态方法
-MovieSchema.statics={
+
+CategorySchema.statics={
     fetch:function (cb) {
         return this
             .find({})
@@ -50,6 +42,5 @@ MovieSchema.statics={
             .exec(cb)
     }
 }
-// 导出movieSchema模式
-module.exports=MovieSchema
+module.exports=CategorySchema
 //定义模式

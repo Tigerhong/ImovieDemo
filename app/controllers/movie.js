@@ -1,6 +1,7 @@
 var underscore = require("underscore");// _.extend用新对象里的字段替换老的字段
 var Movie = require("../mongodb/models/movie");// 载入mongoose编译后的模型movie
 var Comment = require("../mongodb/models/comment");
+var Category = require("../mongodb/models/category");
 /**
  * details page. 电影详情界面
  * @param req
@@ -32,19 +33,14 @@ exports.details = function (req, res, next) {
  * @param next
  */
 exports.admin = function (req, res, next) {
-    res.render('admin', {
-        title: 'imooc 后台录入页',
-        movie: {
-            doctor: "",
-            country: "",
-            title: "",
-            year: "",
-            poster: "",
-            language: "",
-            flash: "",
-            summary: "",
-        }
-    });
+    Category.fetch(function (err,categories) {
+        if (err)console.log(err)
+        res.render('admin', {
+            title: 'imooc 后台录入页',
+            movie: {},
+            categories:categories
+        });
+    })
 }
 /**
  * admin update movie 后台更新页
@@ -55,12 +51,14 @@ exports.update = function (req, res) {
     var id = req.params.id;
     if (id) {
         Movie.findById(id, function (err, movie) {
-            if (err) {
-                console.log(err)
-            }
-            res.render('admin', {
-                title: "imooc 后台更新页面",
-                movie: movie
+            if (err) {console.log(err) }
+            Category.fetch(function (err,categories) {
+                if (err)console.log(err)
+                res.render('admin', {
+                    title: 'imooc 后台更新页面',
+                    movie: movie,
+                    categories:categories
+                });
             })
         })
     } else {
@@ -76,7 +74,7 @@ exports.new = function (req, res) {
     var id = req.body.movie._id;
     var movieObj = req.body.movie
     var _movie
-    if (id !== "undefined") {
+    if (id) {
         Movie.findById(id, function (err, movie) {
             if (err) {
                 console.log(err);
@@ -90,22 +88,22 @@ exports.new = function (req, res) {
             })
         })
     } else {
-        _movie = new Movie({
-            doctor: movieObj.doctor,
-            title: movieObj.title,
-            country: movieObj.country,
-            language: movieObj.language,
-            year: movieObj.year,
-            poster: movieObj.poster,
-            summary: movieObj.summary,
-            flash: movieObj.flash,
-        })
+        _movie = new Movie(movieObj)
+        var categoryId = movieObj.category
         _movie.save(function (err, movie) {
             if (err) {
                 console.log(err);
             }
-            console.log("电影信息录入成功")
-            res.redirect('/movie/' + movie._id);
+            Category.findById(categoryId,function (e, category) {
+                if (err) {
+                    console.log(err);
+                }
+                category.movies.push(movie._id)
+                category.save(function (e, category) {
+                    console.log("电影信息录入成功")
+                    res.redirect('/movie/' + movie._id);
+                })
+            })
         })
     }
 }

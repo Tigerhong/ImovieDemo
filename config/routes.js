@@ -2,6 +2,7 @@ var Index = require('../app/controllers/index');
 var User = require('../app/controllers/user');
 var Movie = require('../app/controllers/movie');
 var Comment = require('../app/controllers/comment');
+var Category = require('../app/controllers/category');
 
 module.exports = function (app) {
     //pre hande session 会话持久逻辑预处理
@@ -33,4 +34,9 @@ module.exports = function (app) {
 
     //Comment
     app.post('/user/comment', User.signinRequired,Comment.save)
+
+    //Category
+    app.get('/admin/category', User.signinRequired,User.adminRequired,Category.adminCategory)//后台，电影分类录入
+    app.get('/admin/category/list', User.signinRequired,User.adminRequired,Category.adminCategoryList)//后台，电影分类列表界面
+    app.post('/admin/category/new', User.signinRequired,User.adminRequired,Category.save)//后台，电影分类录入请求
 };
