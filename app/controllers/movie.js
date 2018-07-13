@@ -2,6 +2,9 @@ var underscore = require("underscore");// _.extend用新对象里的字段替换
 var Movie = require("../mongodb/models/movie");// 载入mongoose编译后的模型movie
 var Comment = require("../mongodb/models/comment");
 var Category = require("../mongodb/models/category");
+
+var fs = require('fs');
+var path = require('path');
 /**
  * details page. 电影详情界面
  * @param req
@@ -65,6 +68,37 @@ exports.update = function (req, res) {
         console.log("后台更新页id不存在")
     }
 }
+var multer  = require('multer')
+exports.uploadPoster=function(req,res,next){
+    var upload = multer()
+    var singleFileUpload=upload.single('uploadPoster');
+    singleFileUpload(req, res, function(err){
+        if (err) {
+            next()
+            return  console.log(err);
+        }
+        //由于设置了enctype='multipart/form-data'
+        // ，我们在save方法里取req.body是取不到值的
+        // ，这里使用multer的req.body能获取文本域的值
+        // ，将multer里的req.body赋给当前的req.body，并next传给save方法
+        req.body = req.body;
+        console.log(req.file);
+        var uploadPoster = req.file;
+        var orginalFilename = uploadPoster.originalname;
+        if (orginalFilename){
+                var timeStamp = Date.now();
+                var type = uploadPoster.mimetype.split('/')[1];
+                var poster=timeStamp+'.'+type;
+                var newPath=path.join(__dirname,'../../','/public/upload/'+poster)
+                fs.writeFile(newPath,uploadPoster.buffer,function (err) {
+                    req.poster=poster;
+                    next()
+                })
+        } else{
+            next()
+        }
+    });
+}
 /**
  * admin post movie 后台录入页
  * @param req
@@ -74,6 +108,9 @@ exports.new = function (req, res) {
     var id = req.body.movie._id;
     var movieObj = req.body.movie
     var _movie
+    if (req.poster){
+        movieObj.poster=req.poster
+    }
     if (id) {
         Movie.findById(id, function (err, movie) {
             if (err) {
@@ -120,6 +157,8 @@ exports.new = function (req, res) {
                         res.redirect('/movie/' + movie._id);
                     })
                 })
+            }else{
+                res.redirect('/movie/' + movie._id);
             }
         })
     }
