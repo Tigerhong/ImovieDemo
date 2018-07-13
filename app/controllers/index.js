@@ -26,3 +26,33 @@ exports.index = function (req, res, next) {
             });
         })
 }
+exports.search = function (req, res, next) {
+    var catId = req.query.cat;
+    var p = req.query.p;
+    var page=parseInt(p,10)||0
+    var count=2
+    var index=page*count
+    Category
+        .find({_id: catId})
+        .populate({
+            path: 'movies',
+            select: 'title poster',
+        })
+        .exec(function (err, categories) {
+            var category = categories[0] || {}
+            var movies=category.movies||[]
+            var results=movies.slice(index,index+count)
+
+            if (err) {
+                console.log(err)
+            }
+            res.render('results', {
+                title: 'imooc 结果列表页面',
+                keyword:category.name,
+                query:'cat='+catId,
+                currentPage:(page+1),
+                totalPage:Math.ceil(movies.length/count),
+                movies: results,
+            });
+        })
+}

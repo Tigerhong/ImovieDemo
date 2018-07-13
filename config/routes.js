@@ -15,6 +15,7 @@ module.exports = function (app) {
     })
     //Index
     app.get('/', Index.index);//index page项目的首页
+    app.get('/results',Index.search)
 
     //User
     app.post('/user/signup', User.singup)//signup注册请求
