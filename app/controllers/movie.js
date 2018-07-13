@@ -13,6 +13,11 @@ var path = require('path');
  */
 exports.details = function (req, res, next) {
     var id = req.params.id;
+    Movie.update({_id:id},{$inc:{pv:1}},function (err) {
+        if (err) {
+            console.log(err)
+        }
+    })
     //todo:第一种方式movie user各种查询
     //现在使用另外一种，简单的callback的嵌套查询，这样不怎么好
     Movie.findById(id, function (err, movie) {
