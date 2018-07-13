@@ -90,20 +90,37 @@ exports.new = function (req, res) {
     } else {
         _movie = new Movie(movieObj)
         var categoryId = movieObj.category
+        var categoryName = movieObj.categoryName
         _movie.save(function (err, movie) {
             if (err) {
                 console.log(err);
             }
-            Category.findById(categoryId,function (e, category) {
-                if (err) {
-                    console.log(err);
-                }
-                category.movies.push(movie._id)
-                category.save(function (e, category) {
-                    console.log("电影信息录入成功")
-                    res.redirect('/movie/' + movie._id);
+            if(categoryId){
+                //优先保存电影分类选择
+                Category.findById(categoryId,function (e, category) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    category.movies.push(movie._id)
+                    category.save(function (e, category) {
+                        console.log("电影信息录入成功")
+                        res.redirect('/movie/' + movie._id);
+                    })
                 })
-            })
+            }else if(categoryName){
+                //没有选择电影分类，则看下有没有自定义分类
+                var category=new Category({
+                    name:categoryName,
+                    movies:[movie._id]
+                })
+                category.save(function (e, category) {
+                    movie.category=category._id;
+                    movie.save(function (e, movie) {
+                        console.log("电影信息录入成功")
+                        res.redirect('/movie/' + movie._id);
+                    })
+                })
+            }
         })
     }
 }
