@@ -2,7 +2,7 @@ var underscore = require("underscore");// _.extend用新对象里的字段替换
 var Movie = require("../mongodb/models/movie");// 载入mongoose编译后的模型movie
 var Comment = require("../mongodb/models/comment");
 var Category = require("../mongodb/models/category");
-
+var multer  = require('multer')
 var fs = require('fs');
 var path = require('path');
 /**
@@ -73,9 +73,18 @@ exports.update = function (req, res) {
         console.log("后台更新页id不存在")
     }
 }
-var multer  = require('multer')
 exports.uploadPoster=function(req,res,next){
-    var upload = multer()
+    var storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, path.join(__dirname,'../../','/public/upload/'))
+        },
+        filename: function (req, file, cb) {
+            var type = file.mimetype.split('/')[1];
+            cb(null,   Date.now()+ '.' +type)
+        }
+    })
+    var upload = multer({ storage: storage })
+
     var singleFileUpload=upload.single('uploadPoster');
     singleFileUpload(req, res, function(err){
         if (err) {
@@ -88,20 +97,10 @@ exports.uploadPoster=function(req,res,next){
         // ，将multer里的req.body赋给当前的req.body，并next传给save方法
         req.body = req.body;
         console.log(req.file);
-        var uploadPoster = req.file;
-        var orginalFilename = uploadPoster.originalname;
-        if (orginalFilename){
-                var timeStamp = Date.now();
-                var type = uploadPoster.mimetype.split('/')[1];
-                var poster=timeStamp+'.'+type;
-                var newPath=path.join(__dirname,'../../','/public/upload/'+poster)
-                fs.writeFile(newPath,uploadPoster.buffer,function (err) {
-                    req.poster=poster;
-                    next()
-                })
-        } else{
-            next()
+        if (req.file){
+            req.poster=req.file.filename;
         }
+        next()
     });
 }
 /**
