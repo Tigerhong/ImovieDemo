@@ -29,8 +29,8 @@ module.exports = function (app) {
     app.get('/movie/:id', Movie.details);//details page. 电影详情界面
     app.get('/admin/movie',User.signinRequired,User.adminRequired, Movie.admin);//admin page. 后台录入展示页面
     app.get("/admin/movie/update/:id",User.signinRequired,User.adminRequired, Movie.update)//admin update movie 后台更新页
-    app.post("/admin/movie/movie/new", User.signinRequired,User.adminRequired,Movie.uploadPoster,Movie.new)//admin post movie 后台录入请求
-    app.delete('/admin/movie/list/deleteMovie', User.signinRequired,User.adminRequired,Movie.del)// list delete movie data 后台录入list删除请求
+    app.post("/admin/movie/create", User.signinRequired,User.adminRequired,Movie.uploadPoster,Movie.new)//admin post movie 后台录入请求
+    app.delete('/admin/movie/list', User.signinRequired,User.adminRequired,Movie.del)// list delete movie data 后台录入list删除请求
     app.get('/admin/movie/list', User.signinRequired,User.adminRequired,Movie.list);//list page. 后台电影列表界面
 
     //Comment
@@ -39,5 +39,5 @@ module.exports = function (app) {
     //Category
     app.get('/admin/category', User.signinRequired,User.adminRequired,Category.adminCategory)//后台，电影分类录入
     app.get('/admin/category/list', User.signinRequired,User.adminRequired,Category.adminCategoryList)//后台，电影分类列表界面
-    app.post('/admin/category/new', User.signinRequired,User.adminRequired,Category.save)//后台，电影分类录入请求
+    app.post('/admin/category/create', User.signinRequired,User.adminRequired,Category.save)//后台，电影分类录入请求
 };

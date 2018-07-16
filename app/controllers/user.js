@@ -96,7 +96,7 @@ exports.list=function (req, res, next) {
         if (err) {
             console.log(err)
         }
-        res.render('userlist', {
+        res.render('admin/user/userlist', {
             title: 'imooc 用户列表页',
             users: users
         });

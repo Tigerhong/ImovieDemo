@@ -13,7 +13,7 @@ exports.save=function (req, res) {
     })
 }
 exports.adminCategory=function (req, res) {
-   res.render('adminCategory',{
+   res.render('admin/category/admin',{
        title:'后台电影类别录入页面',
        category:{}
    })
@@ -25,7 +25,7 @@ exports.adminCategory=function (req, res) {
  */
 exports.adminCategoryList=function (req, res) {
     Category.fetch(function (e,categories) {
-        res.render('categorylist',{
+        res.render('admin/category/list',{
             title:'后台电影分类列表界面',
             categories:categories
         })

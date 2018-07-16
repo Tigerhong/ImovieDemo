@@ -43,7 +43,7 @@ exports.details = function (req, res, next) {
 exports.admin = function (req, res, next) {
     Category.fetch(function (err,categories) {
         if (err)console.log(err)
-        res.render('admin', {
+        res.render('admin/movie/admin', {
             title: 'imooc 后台录入页',
             movie: {},
             categories:categories
@@ -62,7 +62,7 @@ exports.update = function (req, res) {
             if (err) {console.log(err) }
             Category.fetch(function (err,categories) {
                 if (err)console.log(err)
-                res.render('admin', {
+                res.render('admin/movie/admin', {
                     title: 'imooc 后台更新页面',
                     movie: movie,
                     categories:categories
@@ -196,7 +196,7 @@ exports.list = function (req, res, next) {
         if (err) {
             console.log(err)
         }
-        res.render('list', {
+        res.render('admin/movie/list', {
             title: 'imooc 列表页',
             movies: movies
         });
