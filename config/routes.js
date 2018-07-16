@@ -39,5 +39,7 @@ module.exports = function (app) {
     //Category
     app.get('/admin/category', User.signinRequired,User.adminRequired,Category.adminCategory)//后台，电影分类录入
     app.get('/admin/category/list', User.signinRequired,User.adminRequired,Category.adminCategoryList)//后台，电影分类列表界面
+    app.delete('/admin/category/list', User.signinRequired,User.adminRequired,Category.del)//删除分类的请求
     app.post('/admin/category/create', User.signinRequired,User.adminRequired,Category.save)//后台，电影分类录入请求
+    app.get("/admin/category/update/:id",User.signinRequired,User.adminRequired, Category.update)//显示新增分类界面
 };

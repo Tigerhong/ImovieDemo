@@ -13,6 +13,7 @@ var path = require('path');
  */
 exports.details = function (req, res, next) {
     var id = req.params.id;
+    //点击到电影详情时增加访客统计
     Movie.update({_id:id},{$inc:{pv:1}},function (err) {
         if (err) {
             console.log(err)

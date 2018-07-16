@@ -8,15 +8,15 @@ block content
                         th 电影分类名称
                         th 录入时间
                         th 更新
-                        th 查看
+                        //th 查看
                         th 删除
                 tbody
                     each item in categories
                         tr(class='item-id-#{item._id}')
                             td #{item.name}
                             td #{moment(item.meta.updatAt).format('MM/DD/YYYY  HH:mm:ss')}
-                            td: a(target='_blank',href='/movie/#{item._id}') 查看
-                            td: a(target='_blank',href='/admin/movie/update/#{item._id}') 修改
+                            //td: a(target='_blank',href='/movie/#{item._id}') 查看
+                            td: a(target='_blank',href='/admin/category/update/#{item._id}') 修改
                             td
                                 button.btn.btn-danger.del(type='button',data-id='#{item._id}') 删除
-        script(src='/js/list.js')
+        script(src='/js/categoryList.js')
