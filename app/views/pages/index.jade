@@ -13,12 +13,15 @@ block content
                                 .col-md-2
                                     .thumbnail
                                         a(href='/movie/#{item._id}')
-                                            if  item.poster.indexOf('http:') >-1
-                                                img(src="#{item.poster}",alt="#{item.title}")
+                                            if  item.poster.indexOf('http') >-1
+                                                img(src="#{item.poster}",alt="#{item.title}",onerror="this.onerror=null;this.src='/img/img_error.png'")
                                             else
-                                                img(src="/upload/#{item.poster}",alt="#{item.title}")
+                                                if item.poster
+                                                    img(src="/upload/#{item.poster}",alt="#{item.title}",onerror="this.onerror=null;this.src='/img/img_error.png'")
+                                                else
+                                                    img(src="/img/img_error.png",alt="#{item.title}")
                                         .caption
-                                            h3 #{item.title}
+                                            h3.autocut  #{item.title}
                                             p: a.btn.btn-primary(href='/movie/#{item._id}',role='button')   观看预告片
 
 

@@ -1,15 +1,29 @@
 .container
     .row
-        .page-header.clearfix
-            h1 #{title}
-            .col-md-4
-                small 重度科幻迷
-            .col-md-8
-                form(method='GET',action='/results')
-                    .input-group.col-sm-4.pull-right
-                        input.form-control(type='text',name='q')
-                        span.input-group-btn
-                            button.btn.btn-default(type='submit') 搜索
+        .page-header
+            div.clearfix
+                .col-md-8(style='word-break:break-word')
+                    h1 #{title}
+                if user && user.role>10
+                    .col-md-4
+                        .btn-group.pull-right
+                            button#dLabel.btn.btn-info.dropdown-toggle(type='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") 后台管理界面
+                                span.caret
+                            ul.dropdown-menu(aria-labelledby="dLabel")
+                                li: a(href='/admin/movie') 电影录入界面
+                                li: a(href='/admin/movie/list') 电影列表界面
+                                li: a(href='/admin/category') 电影分类录入界面
+                                li: a(href='/admin/category/list') 电影分类列表界面
+                                li: a(href='/admin/user/list') 用户列表界面
+            div.clearfix
+                .col-md-4
+                    small 重度科幻迷
+                .col-md-8
+                    form(method='GET',action='/results')
+                        .input-group.col-sm-4.pull-right
+                            input.form-control(type='text',name='q')
+                            span.input-group-btn
+                                button.btn.btn-default(type='submit') 搜索
 .navbar.navbar-default.navbar-fixed-bottom
     .container
         .navbar-header
