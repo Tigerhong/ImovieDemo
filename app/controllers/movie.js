@@ -52,7 +52,7 @@ exports.admin = function (req, res, next) {
     })
 }
 /**
- * admin update movie 后台更新页
+ * admin update movie 后台更新页显示
  * @param req
  * @param res
  */
@@ -66,9 +66,10 @@ exports.update = function (req, res) {
             Category.fetch(function (err, categories) {
                 if (err) console.log(err)
                 res.render('admin/movie/admin', {
-                    title: 'imooc 后台更新页面',
+                    title: 'imooc后台更新页面  >' + movie.title,
                     movie: movie,
-                    categories: categories
+                    categories: categories,
+                    isUpdate:true
                 });
             })
         })
@@ -106,70 +107,132 @@ exports.uploadPoster = function (req, res, next) {
         next()
     });
 }
+
 /**
- * admin post movie 后台录入页
+ * admin post movie 后台录入页录入请求
  * @param req
  * @param res
  */
-exports.new = function (req, res) {
+exports.save = function (req, res) {
     var id = req.body.movie._id;
     var movieObj = req.body.movie
     var _movie
+    var categoryId = movieObj.category
+    var categoryName = movieObj.categoryName
     if (req.poster) {
         movieObj.poster = req.poster
     }
     if (id) {
+        //更新电影
         Movie.findById(id, function (err, movie) {
             if (err) {
                 console.log(err);
             }
+            var oldCategroyId = movie.category===undefined ? undefined : movie.category._id;
+
             _movie = underscore.extend(movie, movieObj) // 用新对象里的字段替换老的字段
-            _movie.save(function (err, movie) {
+
+            if (oldCategroyId) {
+                //已经选择分类的
+                if (oldCategroyId.toString() === categoryId.toString()) {
+                    //没有重新选择分类
+                    _movie.save(function (err, movie) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        res.redirect('/movie/' + movie._id);
+                    })
+                } else {
+                    let newCategoryId = categoryId;
+                    //重新选择分类
+                    Category.findById(oldCategroyId, function (e, cate) {
+                        //从旧的分类(oldCategroyId)下删除当前的movie._id,并且保存
+                        cate.movies.forEach(function (value, index) {
+                            if (value.toString() === id.toString()) {
+                                cate.movies.splice(index, 1)
+                            }
+                        })
+                        cate.save(function (e, c) {
+                            //为新的分类newCategory保存movie._id，并且保存
+                            Category.findById(newCategoryId, function (e, c) {
+                                c.movies.push(movie._id)
+                                c.save(function (e, c) {
+                                    _movie.save(function (err, movie) {
+                                        if (err) {
+                                            console.log(err);
+                                        }
+                                        res.redirect('/movie/' + movie._id);
+                                    })
+                                })
+                            })
+                        })
+                    })
+                }
+            } else {
+                //未选择分类
+                Category.findById(categoryId, function (e, c) {
+                    c.movies.push(movie._id)
+                    c.save(function (e, c) {
+                        _movie.save(function (err, movie) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            res.redirect('/movie/' + movie._id);
+                        })
+                    })
+                })
+            }
+        })
+    } else {
+        //创建新的电影
+        _movie = new Movie(movieObj)
+        saveMovie(true, _movie, categoryId, res, categoryName);
+    }
+}
+
+/**
+ * 保存电影
+ * @param _movie
+ * @param categoryId
+ * @param res
+ * @param categoryName
+ */
+function saveMovie(isCreate, _movie, categoryId, res, categoryName) {
+    _movie.save(function (err, movie) {
+        if (err) {
+            console.log(err);
+        }
+        if (categoryId) {
+            //优先保存电影分类选择
+            Category.findById(categoryId, function (e, category) {
                 if (err) {
                     console.log(err);
                 }
-                res.redirect('/movie/' + movie._id);
-            })
-        })
-    } else {
-        _movie = new Movie(movieObj)
-        var categoryId = movieObj.category
-        var categoryName = movieObj.categoryName
-        _movie.save(function (err, movie) {
-            if (err) {
-                console.log(err);
-            }
-            if (categoryId) {
-                //优先保存电影分类选择
-                Category.findById(categoryId, function (e, category) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    category.movies.push(movie._id)
-                    category.save(function (e, category) {
-                        console.log("电影信息录入成功")
-                        res.redirect('/movie/' + movie._id);
-                    })
-                })
-            } else if (categoryName) {
-                //没有选择电影分类，则看下有没有自定义分类
-                var category = new Category({
-                    name: categoryName,
-                    movies: [movie._id]
-                })
+                category.movies.push(movie._id)
                 category.save(function (e, category) {
-                    movie.category = category._id;
-                    movie.save(function (e, movie) {
-                        console.log("电影信息录入成功")
-                        res.redirect('/movie/' + movie._id);
-                    })
+                    console.log("电影信息录入成功")
+                    res.redirect('/movie/' + movie._id);
                 })
-            } else {
-                res.redirect('/movie/' + movie._id);
-            }
-        })
-    }
+            })
+        } else if (categoryName) {
+            //没有选择电影分类，则看下有没有自定义分类
+            var category = new Category({
+                name: categoryName,
+                movies: [movie._id]
+            })
+            category.save(function (e, category) {
+                movie.category = category._id;
+                movie.save(function (e, movie) {
+                    console.log("电影信息录入成功")
+                    res.redirect('/movie/' + movie._id);
+                })
+            })
+        } else {
+            res.redirect('/movie/' + movie._id);
+        }
+    })
 }
+
 /**
  * list delete movie data 列表页删除电影
  * @param req
@@ -196,7 +259,7 @@ exports.del = function (req, res) {
  */
 exports.list = function (req, res, next) {
     Movie.find({})
-        .populate("category","name")//将分类名字查询出来
+        .populate("category", "name")//将分类名字查询出来
         .sort("meta.updateAt")
         .exec(function (err, movies) {
             if (err) {

@@ -1,4 +1,5 @@
 var Category=require('../mongodb/models/category')
+var Movie=require('../mongodb/models/movie')
 /**
  * 分类录入请求
  * @param req
@@ -48,13 +49,37 @@ exports.adminCategoryList=function (req, res) {
 exports.del=function (req, res) {
     var id = req.query.id;
     if (id) {
-        Category.remove({_id: id}, function (err, category) {
-            var movies = category.movies;
-
+        //1.找到id对应的分类
+        //2.将分类下的电影的categoty设置为undefined保存
+        //3.执行删除分类逻辑
+        //todo 这里需要重新优化，现在执行代码执行顺序不对，第2步和第3步并行执行了。
+        //需要顺序执行才对
+        Category.findById(id,function (err, categoty) {
+            //1.找到id对应的分类
             if (err) {
                 console.log(err)
             } else {
-                res.json({success: 1})
+                //2.将分类下每个电影的categoty设置为undefined保存
+               var movies=  categoty.movies
+                for (var i=0, len=movies.length;i<len;i++){
+                    var movieId=movies[i];
+                    Movie.findById(movieId,function (err, movie) {
+                        if (movie.category) {
+                            console.log('重置分类下每个电影的category属性')
+                            movie.category=undefined
+                            movie.save()
+                        }
+                    })
+                }
+                //3.执行删除分类逻辑
+                Category.remove({_id: id}, function (err, c) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        console.log('删除'+categoty.name+'分类成功')
+                        res.json({success: 1})
+                    }
+                })
             }
         })
     }

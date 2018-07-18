@@ -51,6 +51,7 @@ MovieSchema.statics={
     findById:function (id, cb) {
         return this
             .findOne({_id:id})
+            .populate("category","name")
             .exec(cb)
     }
 }

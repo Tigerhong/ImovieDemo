@@ -18,5 +18,20 @@ block content
                             //td: a(target='_blank',href='/movie/#{item._id}') 查看
                             td: a(target='_blank',href='/admin/category/update/#{item._id}') 修改
                             td
-                                button.btn.btn-danger.del(type='button',data-id='#{item._id}') 删除
+                                button.btn.btn-danger(type='button',data-name='#{item.name}',data-id='#{item._id}',data-toggle="modal",data-target="#confrimDelete") 删除
+        //确认删除模态框
+        #confrimDelete.modal.fade
+            .modal-dialog.modal-lg
+                .modal-content
+                    .modal-header
+                        h3
+                            span 是否要删除
+                            span(style='color:red;').title
+                            span 分类
+                    .modal-body
+                        h5
+                            |   将该分类下各个电影重置
+                    .modal-footer
+                        button.btn.btn-default(type='button',data-dismiss='modal') 取消
+                        button.btn.btn-danger.del(type='button') 确定
         script(src='/js/categoryList.js')

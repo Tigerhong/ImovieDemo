@@ -10,17 +10,18 @@ block content
                     label.col-sm-2.control-label(for="inputTitle") 电影名字
                     .col-sm-10
                         input#inputTitle.form-control(type='text',name='movie[title]',value=movie.title,maxlength='30')
-                .form-group
-                    label.col-sm-2.control-label(for="inputCategory") 电影分类
-                    .col-sm-10
-                        input#inputCategory.form-control(type='text',name='movie[categoryName]',value=movie.categoryName)
+                if !isUpdate
+                    .form-group
+                        label.col-sm-2.control-label(for="inputCategory") 电影分类
+                        .col-sm-10
+                            input#inputCategory.form-control(type='text',name='movie[categoryName]',value=movie.categoryName)
                 .form-group
                     label.col-sm-2.control-label 分类选择
                     .col-sm-10
                         each cat in categories
                             label.radio-inline
                             if movie.category
-                                input(type='radio',name='movie[category]',value=cat._id,checked=cat._id.toString()===movie.category.toString())
+                                input(type='radio',name='movie[category]',value=cat._id,checked=cat._id.toString()===movie.category._id.toString())
                             else
                                 input(type='radio',name='movie[category]',value=cat._id)
                             | #{cat.name}
