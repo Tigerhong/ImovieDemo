@@ -28,15 +28,21 @@ var mongoose = require("mongoose");
 mongoose.connect(dbUrl)//连接数据库
 
 var session = require('express-session'); //如果要使用session，需要单独包含这个模块
-var cookieParser = require('cookie-parser'); //如果要使用cookie，需要显式包含这个模块
-var MongoStroe = require('connect-mongo')(session);
-app.use(cookieParser())
+// var cookieParser = require('cookie-parser'); //如果要使用cookie，需要显式包含这个模块
+var MongoStore= require('connect-mongo')(session);
+// app.use(cookieParser())
 app.use(session({
-    secret:'imooc',
-    store:new MongoStroe({
+    secret:'imovie-demo',// 用来对session id相关的cookie进行签名
+    name:'login-user-imovie',
+    cookie:{
+      maxAge:  1000*60*60// 有效期，单位是毫秒
+    },
+    store:new MongoStore({
        url:dbUrl,
         collection:'sessions'
     }),
+    resave: false, // 是否每次都重新保存会话，建议false
+    saveUninitialized: true// 是否自动保存未初始化的会话，建议false
 }))
 
 if ('development'===app.get('env')){

@@ -21,3 +21,7 @@ a {
   word-break: break-word;
   /*word-wrap: break-word;这两个的区别*/
 }
+/*设置a标签的hover*/
+.nodecoration:hover{
+  text-decoration:none;
+}

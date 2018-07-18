@@ -9,6 +9,7 @@ block content
                         th 导演
                         th 国家
                         th 上映年份
+                        th 电影分类
                         th 录入时间
                         th 电影的访问量
                         th 更新
@@ -21,10 +22,15 @@ block content
                             td #{item.doctor}
                             td #{item.country}
                             td #{item.year}
+                            td(style='vertical-align:middle;')
+                                if item.category
+                                    | #{item.category.name}
+                                else
+                                    | 未分类
                             td #{moment(item.meta.updatAt).format('MM/DD/YYYY  HH:mm:ss')}
                             td #{item.pv}
                             td: a(target='_blank',href='/movie/#{item._id}') 查看
                             td: a(target='_blank',href='/admin/movie/update/#{item._id}') 修改
-                            td
+                            td(style='vertical-align:middle;')
                                 button.btn.btn-danger.del(type='button',data-id='#{item._id}') 删除
         script(src='/js/list.js')

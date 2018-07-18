@@ -14,7 +14,7 @@ exports.index = function (req, res, next) {
         .populate({
             path: 'movies',
             select: 'title poster',
-            options: {limit: 6}
+            options: {limit: 4}
         })
         .exec(function (err, categories) {
             if (err) {
@@ -28,7 +28,7 @@ exports.index = function (req, res, next) {
 }
 exports.search = function (req, res, next) {
     var catId = req.query.cat;
-    var page = parseInt(req.query.p, 10) || 0
+    var page = parseInt(req.query.page, 10) || 0
     var count = 2
     var index = page * count
     if (catId) {
@@ -54,6 +54,7 @@ exports.search = function (req, res, next) {
                     currentPage: (page + 1),
                     totalPage: Math.ceil(movies.length / count),
                     movies: results,
+                    totalSize:movies.length
                 });
             })
     }else{
@@ -73,6 +74,7 @@ exports.search = function (req, res, next) {
                     currentPage: (page + 1),
                     totalPage: Math.ceil(movies.length / count),
                     movies: results,
+                    totalSize:movies.length
                 });
             })
     }
