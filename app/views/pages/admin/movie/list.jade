@@ -33,4 +33,73 @@ block content
                             td: a(target='_blank',href='/admin/movie/update/#{item._id}') 修改
                             td(style='vertical-align:middle;')
                                 button.btn.btn-danger.del(type='button',data-id='#{item._id}') 删除
+            nav(aria-label="Page navigation")
+                <!--这个分页是由-->
+                <!--1.首页 2.上一页 3.具体页（类似1-5） 4.下一页 5.末页 6.共***页***条记录-->
+                <!--共同组成-->
+                ul.pagination
+                    <!--首页-->
+                    li
+                        if(page==1)
+                            a 首页
+                        else
+                            a(href='/admin/movie/list?page=1') 首页
+                    <!--上一页-->
+                    if page - 1 <= 0
+                        li.previous.hidden
+                    else
+                        li.previous
+                            a(href='/admin/movie/list?page=#{page-1}') «上一页
+                    <!--具体页（类似1-5）-->
+                    -if (page<limitShowPage){
+                        -//当前页小于限定显示页数时
+                         -for(var i=0;i<limitShowPage;i++){
+                         -var pageTemp=i + 1
+                         -if(page == pageTemp)
+                             li.thisclass: a  #{pageTemp}
+                         -else
+                             li: a(href='/admin/movie/list?page=#{pageTemp}') #{pageTemp}
+                         -}
+                    -}
+                    -else {
+                        -//当前页大于限定显示页数时
+                        -var limitTemp=parseInt(limitShowPage/2)//取得限定页数中间值
+                        -for(var i=0;i<limitShowPage;i++){//0,1,2,3,4,5,6
+                            -if (i<=limitTemp){//<=中间值的
+                                -var temp=parseInt(page)-(limitTemp-i)
+                                -if (temp==page){
+                                    li.thisclass:  a #{page}
+                                -} else{
+                                    li: a(href='/admin/movie/list?page=#{temp}') #{temp}
+                                -}
+                            -}else{//>中间值的
+                                -var temp=parseInt(page)+(i-limitTemp)
+                                     - if (temp<=totalPage){
+                                         li: a(href='/admin/movie/list?page=#{temp}') #{temp}
+                                     -}
+                            -}
+                        -}
+                    -}
+                    <!--下一页-->
+                    if page >= totalPage
+                        li.next.hidden
+                    else
+                        li.next
+                            a(href='/admin/movie/list?page='+(parseInt(page)+1)) 下一页»
+                    <!--末页-->
+                    li
+                        if(page == totalPage)
+                            a 末页
+                        else
+                            a(href='/admin/movie/list?page=#{totalPage}') 末页
+                    <!--共***页***条记录-->
+                    li.pageinfoli.pageinfosp
+                        span
+                            | "共"
+                            strong #{totalPage}
+                            | 页
+                            strong #{moviesSize}
+                            | 条记录
+
         script(src='/js/list.js')
+        link(rel='stylesheet', href='/stylesheets/list.css')

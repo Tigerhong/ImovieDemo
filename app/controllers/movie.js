@@ -69,7 +69,7 @@ exports.update = function (req, res) {
                     title: 'imooc后台更新页面  >' + movie.title,
                     movie: movie,
                     categories: categories,
-                    isUpdate:true
+                    isUpdate: true
                 });
             })
         })
@@ -128,7 +128,7 @@ exports.save = function (req, res) {
             if (err) {
                 console.log(err);
             }
-            var oldCategroyId = movie.category===undefined ? undefined : movie.category._id;
+            var oldCategroyId = movie.category === undefined ? undefined : movie.category._id;
 
             _movie = underscore.extend(movie, movieObj) // 用新对象里的字段替换老的字段
 
@@ -257,17 +257,38 @@ exports.del = function (req, res) {
  * @param res
  * @param next
  */
+var createError = require('http-errors');
 exports.list = function (req, res, next) {
-    Movie.find({})
-        .populate("category", "name")//将分类名字查询出来
-        .sort("meta.updateAt")
-        .exec(function (err, movies) {
-            if (err) {
-                console.log(err)
-            }
-            res.render('admin/movie/list', {
-                title: 'imooc 列表页',
-                movies: movies
-            });
-        })
+    //当前页
+    var page = req.query.page || 1;
+    //总共页数
+    var totalPage;
+    //限定显示的标签页
+    var limitShowPage = 5;
+    //每页显示多少数据
+    var size = 5;
+    Movie.count({}, function (e, count) {//实际总条数
+        totalPage = Math.ceil(count / size)
+        if (page > totalPage) {
+            return next(createError('当前选择页大于最大页数'));
+        }
+        Movie.find({})
+            .populate("category", "name")//将分类名字查询出来
+            .skip((page - 1) * size)
+            .limit(size)
+            .sort("meta.updateAt")
+            .exec(function (err, movies) {
+                if (err) {
+                    console.log(err)
+                }
+                res.render('admin/movie/list', {
+                    title: 'imooc 电影列表页',
+                    movies: movies,
+                    moviesSize: count,
+                    page: page,
+                    totalPage: totalPage,
+                    limitShowPage: limitShowPage
+                });
+            })
+    })
 }
