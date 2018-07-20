@@ -34,17 +34,18 @@ block content
                             td(style='vertical-align:middle;')
                                 button.btn.btn-danger.del(type='button',data-id='#{item._id}') 删除
             nav(aria-label="Page navigation")
-                <!--这个分页是由-->
-                <!--1.首页 2.上一页 3.具体页（类似1-5） 4.下一页 5.末页 6.共***页***条记录-->
-                <!--共同组成-->
+                //这样的注释是注释一段
+                    这个分页是由
+                    1.首页 2.上一页 3.具体页（类似1-5） 4.下一页 5.末页 6.共***页***条记录
+                    共同组成
                 ul.pagination
-                    <!--首页-->
+                    //首页
                     li
                         if(page==1)
                             a 首页
                         else
                             a(href='/admin/movie/list?page=1') 首页
-                    <!--上一页-->
+                    //上一页
                     if page - 1 <= 0
                         li.previous.hidden
                     else
