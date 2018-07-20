@@ -5,7 +5,9 @@
 
 该项目是在webstrom环境，使用 express+pug编写的
 
-
+# 学习 #
+1.使用mixins对重复代码的抽取，可以使这些代码变成公共的组件(template)。减少代码冗余，方便代码的维护
+[mixins学习链接(前端开发模板引擎 -- Jade系列之神奇的 mixins 和模板继承)](http://www.html-js.com/article/2596 )
 
 # 编写过程中遇到的一些问题 #
 

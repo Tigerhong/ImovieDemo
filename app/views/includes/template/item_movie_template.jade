@@ -1,0 +1,28 @@
+//以下是首页（搜索页），每个电影item的模版
+
+
+
+//没有数据的显示效果
+mixin noDataShow
+    h2(style='text-align:center;')  暂无数据
+
+
+//电影item的显示
+mixin movieItemTemplate(item)
+    .thumbnail
+        +imgShowTemplate(item)
+        .caption
+            h3.autocut  #{item.title}
+            p: a.btn.btn-primary(href='/movie/#{item._id}',role='button')   观看预告片
+
+
+//电影item中图片显示模版
+mixin imgShowTemplate(item)
+    a(href='/movie/#{item._id}')
+        if  item.poster.indexOf('http') > -1
+            img(src="#{item.poster}",alt="#{item.title}",onerror="this.onerror=null;this.src='/img/img_error.png'")
+        else
+            if item.poster
+                img(src="/upload/#{item.poster}",alt="#{item.title}",onerror="this.onerror=null;this.src='/img/img_error.png'")
+            else
+                img(src="/img/img_error.png",alt="#{item.title}")

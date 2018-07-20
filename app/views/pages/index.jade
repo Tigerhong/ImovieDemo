@@ -12,20 +12,10 @@ block content
                         if cat.movies &&cat.movies.length>0
                             each item in cat.movies
                                 .col-md-3
-                                    .thumbnail
-                                        a(href='/movie/#{item._id}')
-                                            if  item.poster.indexOf('http') >-1
-                                                img(src="#{item.poster}",alt="#{item.title}",onerror="this.onerror=null;this.src='/img/img_error.png'")
-                                            else
-                                                if item.poster
-                                                    img(src="/upload/#{item.poster}",alt="#{item.title}",onerror="this.onerror=null;this.src='/img/img_error.png'")
-                                                else
-                                                    img(src="/img/img_error.png",alt="#{item.title}")
-                                        .caption
-                                            h3.autocut  #{item.title}
-                                            p: a.btn.btn-primary(href='/movie/#{item._id}',role='button')   观看预告片
+                                    +movieItemTemplate(item)
                         else
-                            h2(style='text-align:center;')  暂无数据
+                            +noDataShow
+    include ../includes/template/item_movie_template
 
 
 
