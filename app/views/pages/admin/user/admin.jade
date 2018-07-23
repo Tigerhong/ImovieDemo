@@ -1,0 +1,38 @@
+extends ../../../layout
+block content
+    .container
+        .row
+            form.form-horizontal(method='post',action='/admin/user/save' ,enctype="multipart/form-data")
+                if user._id
+                    input(type="hidden",value=user._id,name='user[_id]')
+                .form-group
+                    label.col-sm-2.control-label  用户头像
+                    .col-sm-10
+                        input(type='hidden',name='user[headPicUrl]',value=user.headPicUrl)
+                        +showUserImg(200,user.headPicUrl,user.name)
+                .form-group
+                    label.col-sm-2.control-label  帐号
+                    .col-sm-10
+                        input.form-control(type='text',value=user.name,readonly)
+                .form-group
+                    label.col-sm-2.control-label(for="inputEmail") 邮箱
+                    .col-sm-10
+                        input#inputEmail.form-control(type='text',name='user[email]',value=user.email,readonly=isReadable)
+                .form-group
+                    label.col-sm-2.control-label(for="inputCountry")  国家
+                    .col-sm-10
+                        input#inputCountry.form-control(type='text',name='user[country]',value=user.country,readonly=isReadable)
+                if !isReadable
+                    .form-group
+                        label.col-sm-2.control-label(for="uploadPoster") 头像上传
+                        .col-sm-10
+                            input#uploadPoster(type='file', name="uploadPoster")
+                .form-group
+                    label.col-sm-2.control-label(for="inputSummary") 个人简介
+                    .col-sm-10
+                        textarea#inputSummary.form-control(type='text',name='user[summary]',readonly=isReadable) #{user.summary}
+                if !isReadable
+                    .form-group
+                        .col-sm-offset-2.col-md-10
+                            button.btn.btn-primary(type='sumbit') 录入
+    include ../../../includes/template/item_user_img

@@ -24,6 +24,9 @@ module.exports = function (app) {
     app.get("/signin", User.showSignin)//登入展示页面
     app.get("/logout", User.logout)//登出
     app.get('/admin/user/list', User.signinRequired,User.adminRequired,User.list);//后台用户list界面.
+    app.get('/admin/user',User.signinRequired, User.admin);//用户信息录入界面
+    app.post('/admin/user/save',User.signinRequired,User.postHeadPic,User.save);//用户信息保存请求
+    app.get('/user/:id', User.details);//用户信息详情界面
 
     //Movie
     app.get('/movie/:id', Movie.details);//details page. 电影详情界面

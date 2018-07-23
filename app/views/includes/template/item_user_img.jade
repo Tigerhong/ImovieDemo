@@ -1,0 +1,9 @@
+//头像的显示
+mixin showUserImg(size,url,alt)
+    if url
+        if  url.indexOf('http') > -1
+            img.img-circle(style='width:#{size}px;height:#{size}px;',src='#{url}',alt="#{alt}的图片",onerror="this.onerror=null;this.src='/img/img_error.png'")
+        else
+            img.img-circle(style='width:#{size}px;height:#{size}px;',src="/upload/headPic/#{url}",alt="#{alt}的图片",onerror="this.onerror=null;this.src='/img/img_error.png'")
+    else
+        img.img-circle(style='width:#{size}px;height:#{size}px;',src="/img/img_error.png",alt="#{alt}的图片")

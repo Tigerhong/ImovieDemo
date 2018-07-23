@@ -23,8 +23,8 @@ exports.details = function (req, res, next) {
     //现在使用另外一种，简单的callback的嵌套查询，这样不怎么好
     Movie.findById(id, function (err, movie) {
         Comment.find({movie: id})
-            .populate("from", "name")//将谁回复的名字查询出来
-            .populate("reply.from reply.to", "name")//将子评论中谁回复的和回复给谁的名字查询出来
+            .populate("from", "name headPicUrl")//将谁回复的名字，头像查询出来
+            .populate("reply.from reply.to", "name headPicUrl")//将子评论中谁回复的和回复给谁的名字，头像查询出来
             .exec(function (err, comments) {
                 console.log(comments)
                 res.render('details', {

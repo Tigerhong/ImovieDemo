@@ -10,6 +10,10 @@ var UserSchema=new mongoose.Schema({
         type:String
     },
     password:String,
+    email:String,//邮箱
+    country:String,//国家
+    summary:String,//个人简介
+    headPicUrl:String,//头像url
     // 0 : normal user
     // 1 : verified user
     // 2 : professonal user
@@ -34,9 +38,13 @@ var UserSchema=new mongoose.Schema({
 UserSchema.pre("save",function (next) {
     var user = this
     //每次使用save前都会执行这个监听方法
-    if (this.isNew){
+    if (this.isNew){ //是否是第一次创建
+       //第一次创建
         this.meta.createAt=this.meta.updatAt=Date.now()
+        var hash = bcryptNodejs.hashSync(this.password);
+        this.password = hash; // 注意：这里是同步执行的
     }else{
+        //非第一创建
         this.meta.updatAt=Date.now()
     }
 
@@ -50,8 +58,6 @@ UserSchema.pre("save",function (next) {
     //         next()
     //     })
     // })
-    var hash = bcryptNodejs.hashSync(this.password);
-    this.password = hash; // 注意：这里是同步执行的
     next();
 })
 UserSchema.methods = {

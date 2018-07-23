@@ -1,4 +1,87 @@
 var User =  require("../mongodb/models/user");// 载入mongoose编译后的模型movie
+var path = require('path');
+var multer = require('multer')
+/**
+ *用户信息详情界面
+ * @param req
+ * @param res
+ */
+exports.details=function (req, res) {
+    var id = req.params.id;
+    User.findById(id,function (e, user) {
+        res.render('admin/user/admin',{
+            title:'用户信息',
+            isReadable:true,
+            user,user
+        })
+    })
+}
+/**
+ * 用户头像的保存请求
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.postHeadPic=function (req, res,next) {
+    var storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, path.join(__dirname, '../../', '/public/upload/headPic'))
+        },
+        filename: function (req, file, cb) {
+            var type = file.mimetype.split('/')[1];
+            cb(null, Date.now() + '.' + type)
+        }
+    })
+    var upload = multer({storage: storage})
+
+    var singleFileUpload = upload.single('uploadPoster');
+    singleFileUpload(req, res, function (err) {
+        if (err) {
+            next()
+            return console.log(err);
+        }
+        //由于设置了enctype='multipart/form-data'
+        // ，我们在save方法里取req.body是取不到值的
+        // ，这里使用multer的req.body能获取文本域的值
+        // ，将multer里的req.body赋给当前的req.body，并next传给save方法
+        req.body = req.body;
+        console.log("用户保存的头像:",req.file);
+        if (req.file) {
+            req.headPicUrl = req.file.filename;
+        }
+        next()
+    });
+}
+/**
+ * 用户信息保存请求
+ * @param req
+ * @param res
+ */
+exports.save=function (req, res) {
+    var id = req.body.user._id;
+    var userObject=req.body.user
+    if (req.headPicUrl) {
+        userObject.headPicUrl = req.headPicUrl
+    }
+    User.findById(id,function (err, user) {
+       var _user = Object.assign(user, userObject);
+        _user.save(function (e, user) {
+            if (e)console.log(e)
+            req.session.user=user
+            res.redirect('/admin/user')
+        })
+    })
+}
+/**
+ * 用户录入界面
+ * @param req
+ * @param res
+ */
+exports.admin=function (req, res) {
+    res.render('admin/user/admin',{
+        title:'用户信息'
+    })
+}
 /**
  * 访问注册界面
  * @param req

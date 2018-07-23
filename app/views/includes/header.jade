@@ -30,7 +30,8 @@
             a.navbar-brand(href="/")    重度科幻迷
         if user
             p.navbar-text.navbar-right
-                span    欢迎您，#{user.name}
+                span    欢迎您，
+                    a.navbar-link(href='/admin/user')  #{user.name}
                 span &nbsp;|&nbsp;
                 a.navbar-link(href='/logout')  登出
         else
